@@ -1,4 +1,4 @@
-package common
+package blockchain
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ type Block struct {
 	Hash     []byte
 	Data     []byte
 	PrevHash []byte
+	Nounce   int
 }
 
 func (b *Block) DeriveHash() {
@@ -25,6 +26,10 @@ func CreateBlock(data string, prevHash []byte) *Block {
 		PrevHash: prevHash,
 	}
 
-	block.DeriveHash()
+	pow := NewProof(block)
+	nounce, hash := pow.Run()
+	block.Hash = hash
+	block.Nounce = nounce
+
 	return block
 }
